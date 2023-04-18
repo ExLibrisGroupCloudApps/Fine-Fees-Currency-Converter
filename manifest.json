@@ -1,0 +1,28 @@
+{
+   "id": "fine-fees-currency-converter",
+   "title": "Fine/fees currency converter",
+   "subtitle": "Fine/fees currency converter",
+   "author": "Tzofiya",
+   "entities": [
+      "FEES",
+      "USER"
+   ],
+   "icon": {
+      "type": "url",
+      "value": "/assets/currencyConverter-logo.jpg"
+   },
+   "fullscreen": {
+      "allow": true,
+      "open": false
+   },
+   "pages": {
+      "help": "/#/help",
+      "config": "/#/config"
+   },
+   "contentSecurity": {
+      "sandbox": {
+         "popups": true,
+         "modals": true
+      }
+   }
+}

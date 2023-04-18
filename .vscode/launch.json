@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "request": "attach",
+            "type": "chrome",
+            "webRoot": "C:\Users\tzofiyat\Documents\fine-fees-currency-converter\cloudapp"
+        },
+        
+
+        
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:4200/mng/login?institute=TRAINING_1_INST&auth=local&debug=true",
+            "webRoot": "C:\Users\tzofiyat\Documents\fine-fees-currency-converter\cloudapp"
+        }
+    ]
+}

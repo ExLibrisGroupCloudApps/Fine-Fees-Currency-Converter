@@ -1,0 +1,16 @@
+<div class="eca-actions">
+  <a [routerLink]="['']">
+    <button mat-flat-button color="secondary"><mat-icon>arrow_back</mat-icon>Back</button>
+  </a>
+  <button mat-flat-button color="secondary" (click)="onRestoreDef()">Restore Defaults</button>
+  <button mat-flat-button color="primary"  (click)="onSave()">Save</button>
+</div>
+
+<h1>Configuration</h1>
+  <mat-form-field>
+    <mat-label>Number of digits to display after the decimal point:</mat-label>
+    <input matInput type="number" [(ngModel)]="decimalDigits" min="1" max="20">         
+</mat-form-field>
+<div class="loading-shade" *ngIf="loading" >
+  <mat-progress-spinner mode="indeterminate" diameter="50"> </mat-progress-spinner>
+</div>

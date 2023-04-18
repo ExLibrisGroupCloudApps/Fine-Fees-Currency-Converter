@@ -1,0 +1,133 @@
+<ng-container *ngIf="isAuthorizedUser">
+    <p>
+        To begin converting fee amounts, add specific amount, navigate to a list of
+        user fees or navigate to user details screen
+    </p>
+    <mat-radio-group aria-label="Select an option" [(ngModel)]="convertTypeSelected"
+        (ngModelChange)="onConvertTypeChange()">
+        <mat-radio-button value="CONVERT_USER_FEES">Convert fees from the user fees list</mat-radio-button>
+        <mat-radio-button value="CONVERT_USER_FEES_IN_ALMA_PAGE">Convert fees appearing in the Alma page
+        </mat-radio-button>
+        <mat-radio-button value="CONVERT_USER_ACTIVE_BALANCE">Convert user active balance</mat-radio-button>
+        <mat-radio-button value="CONVERT_SPECIFIC_AMOUNT">Convert a specified amount</mat-radio-button>
+    </mat-radio-group>
+    <br />
+    <div  *ngIf= !loading>
+        <div
+            *ngIf="convertTypeSelected === ConvertTypeOptions.CONVERT_USER_FEES || convertTypeSelected === ConvertTypeOptions.CONVERT_USER_FEES_IN_ALMA_PAGE">
+            <div *ngIf="count > 0">
+                <p class="titlearea">Select fines/fees</p>
+                <br />
+                <mat-label>{{ selectedEntities.length }}
+                    records selected</mat-label>
+                <eca-select-entities #selectEntities 
+                    [(selected)]="selectedEntities"
+                    [entities$]="fineFeeEntities$">
+                </eca-select-entities>
+                <ng-container [ngTemplateOutlet]="selectedCurrencyTemplate"></ng-container>
+                <button mat-raised-button="mat-raised-button" color="primary" class="custom-button"
+                    (click)="convertUserFeesInAlmaPage()" [disabled]="!selectedCurrency || !selectedEntities.length ||selectedCurrecnyerrorMessage">
+                    Convert
+                </button>
+            </div>
+        </div>
+        <div *ngIf="convertTypeSelected === ConvertTypeOptions.CONVERT_SPECIFIC_AMOUNT">
+            <form [formGroup]="converterForm" (ngSubmit)="convertSpecificAmount()">
+                <mat-form-field>
+                    <mat-label>Amount</mat-label>
+                    <input matInput="matInput" formControlName="amount" type="number" />
+                    <mat-error *ngIf="converterForm.controls['amount'].hasError('required')">
+                        Amount is
+                        <strong>required</strong>
+                    </mat-error>
+                    <mat-error *ngIf="converterForm.controls['amount'].hasError('min')">Amount should be greater than 0
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Source Currency</mat-label>
+                    <mat-select (selectionChange)="onSelectionTargetCurrecny()" formControlName="sourceCurrency">
+                        <mat-option *ngFor="let currency of supportedCurrencies" [value]="currency">
+                            {{ currency }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="converterForm.controls['sourceCurrency'].hasError('required')">
+                        Source Currency is
+                        <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Target Currency</mat-label>
+                    <mat-select (selectionChange)="onSelectionTargetCurrecny()" formControlName="targetCurrency">
+                        <mat-option *ngFor="let currency of supportedCurrencies" [value]="currency">
+                            {{ currency }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="converterForm.controls['targetCurrency'].hasError('required')">
+                        Target Currency is
+                        <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <button mat-raised-button="mat-raised-button" color="primary" type="submit" class="custom-button"
+                    [disabled]="!converterForm.valid || selectedCurrecnyerrorMessage">
+                    Convert
+                </button>
+            </form>
+        </div>
+        <div *ngIf="convertTypeSelected === ConvertTypeOptions.CONVERT_USER_ACTIVE_BALANCE&&userActiveBlance != null">
+            <div class="result">
+                <b>Fees amount:
+                    {{ userActiveBlance }} {{defaultCurrency}}</b>
+                <button mat-icon-button="mat-icon-button" (click)="refreshActiveBalance()" class="refresh-icon">
+                    <mat-icon color="primary">refresh</mat-icon>
+                </button>
+            </div>
+            <ng-container [ngTemplateOutlet]="selectedCurrencyTemplate"></ng-container>
+            <button mat-raised-button="mat-raised-button" color="primary" class="custom-button"
+                (click)="convertUserActiveBalance()" [disabled]="!selectedCurrency ||selectedCurrecnyerrorMessage">
+                Convert
+            </button>
+        </div>
+    </div>
+</ng-container>
+
+<ng-template #selectedCurrencyTemplate>
+<mat-form-field appearance="standard" >
+    <mat-label>Select target currency</mat-label>
+    <mat-select required="required" (selectionChange)="onSelectionTargetCurrecny()"
+        [(value)]="selectedCurrency">
+        <mat-option *ngFor="let option of supportedCurrencies" [value]="option">
+            {{ option }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+</ng-template>
+
+<div class="loading-shade" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+</div>
+
+<div *ngIf="!isAuthorizedUser&& !loading" class="authorized-error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ AUTHORIZED_ERROR_MESSAGE }}</span>
+</div>
+
+<div [style.display]="selectedCurrecnyerrorMessage? 'block' : 'none'" class="error-message" #selectCurrecnyErrMessage>
+    {{ selectedCurrecnyerrorMessage }}
+</div>
+<div [style.display]="errorMessage? 'block' : 'none'" class="error-message" #errMessage>
+    {{ errorMessage }}
+</div>
+
+<div [style.display]="sourceAmount && convertedAmount? 'block' : 'none'" class="result" #convertedResult>
+    <p>
+        <b>Source amount:
+        </b>
+        {{ sourceAmount }}
+    </p>
+    <p>
+        <b>Converted amount:
+        </b>
+        {{ convertedAmount }}
+    </p>
+</div>

@@ -1,0 +1,83 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+::ng-deep .mat-select-panel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+::ng-deep mat-checkbox span:last-child {
+  white-space: pre-wrap;
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px;
+  align-items: flex-start;
+}
+
+mat-radio-button {
+  margin-right: 10px;
+}
+
+mat-form-field {
+  margin: 15px;
+}
+
+::ng-deep mat-form-field-label {
+  overflow: visible !important;
+}
+
+.error-message {
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+  margin: 15px;
+}
+
+.custom-button {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  border-radius: 20px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.titlearea {
+  font-size: 18px;
+  font-weight: bolder;
+  display: block;
+}
+
+.convert-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.result {
+  font-size: 18px;
+  font-weight: bolder;
+  margin: 15px;
+}
+
+.refresh-icon mat-icon {
+  font-weight: bolder;
+}
+
+.authorized-error-message {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid transparent;
+  overflow-wrap: break-word;
+  color: #7f231c;
+  background-color: #fdd9d7;
+  border-color: #fccac7;
+  display: inline-flex;
+}
+
+.authorized-error-message mat-icon {
+  margin-right: 16px;
+}
