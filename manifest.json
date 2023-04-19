@@ -4,7 +4,6 @@
    "subtitle": "Fine/fees currency converter",
    "author": "Tzofiya",
    "entities": [
-      "FEES",
       "USER"
    ],
    "icon": {

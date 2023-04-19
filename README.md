@@ -1,8 +1,6 @@
 # fine-fees-currency-converter
- Cloud App for converting patron fees currency from Alma
+This app can be used for convenient conversion of fulfillment fines and fees from one currency to another.
+This app converts a user’s specific fees or the full owed balance from the institution’s default currency to any currency that has been configured in Alma.
 
-
-
-Please use GitHub issues to report defects, ask questions, or suggest enhancements.
 
  

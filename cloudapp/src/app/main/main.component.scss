@@ -1,4 +1,3 @@
-@import "~bootstrap/dist/css/bootstrap.min.css";
 
 ::ng-deep .mat-select-panel {
   position: absolute;
@@ -37,11 +36,11 @@ mat-form-field {
 }
 
 .custom-button {
-  padding: 10px 20px;
-  font-size: 15px;
-  font-weight: bold;
+  min-width: 98px;
+  line-height: 38px;
+  font-size: 17px;
+  font-weight: 500;
   border-radius: 20px;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 .titlearea {

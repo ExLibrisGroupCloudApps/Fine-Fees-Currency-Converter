@@ -226,7 +226,10 @@ export class MainComponent implements OnInit,
   onConvertUserFeesInAlmaPage() {
     this.loading = true;
     this.eventsService.entities$.pipe(take(1), map((entities) => {
-      const filteredEntities = entities.filter((entity) => entity?.type === "FEES");
+      const filteredEntities = entities.filter((entity) => {
+        let curEntity = entity?.type + '';
+        return curEntity === "FEES"
+      });
       return filteredEntities;
     }), mergeMap((entities) => forkJoin(entities.map((e) => this.restService.call(e.link))).pipe(defaultIfEmpty([]))), map((fees) => {
       fees.map((fine) => {

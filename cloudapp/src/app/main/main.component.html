@@ -25,7 +25,7 @@
                     [entities$]="fineFeeEntities$">
                 </eca-select-entities>
                 <ng-container [ngTemplateOutlet]="selectedCurrencyTemplate"></ng-container>
-                <button mat-raised-button="mat-raised-button" color="primary" class="custom-button"
+                <button mat-raised-button color="primary" class="custom-button "
                     (click)="convertUserFeesInAlmaPage()" [disabled]="!selectedCurrency || !selectedEntities.length ||selectedCurrecnyerrorMessage">
                     Convert
                 </button>

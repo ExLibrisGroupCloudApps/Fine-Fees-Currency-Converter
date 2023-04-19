@@ -13,6 +13,7 @@ import { SelectEntitiesModule } from 'eca-components';
 import { DatePipe } from '@angular/common';
 import { HelpComponent } from './help/help.component';
 import { ConfigComponent } from './config/config.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { ConfigComponent } from './config/config.component';
     AlertModule,
     FormsModule,
     ReactiveFormsModule,
-    SelectEntitiesModule,     
+    SelectEntitiesModule, 
+    MatButtonModule,
     CloudAppTranslateModule.forRoot(),
   ],
   providers: [
