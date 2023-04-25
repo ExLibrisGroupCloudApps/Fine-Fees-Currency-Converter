@@ -55,6 +55,7 @@ export class MainComponent implements OnInit,
   _count = 0;
   decimalDigits: number;
   readonly config = { attributes: true, childList: true, subtree: true };
+  readonly DEF_DECIMAL_DIGITS : number = 2;
 
   // Callback function to execute when mutations are observed
   callbackConvertedResultRef = (mutationList, observer) => {
@@ -107,11 +108,17 @@ export class MainComponent implements OnInit,
       }
     }), mergeMap(() => {
       return this.configService.get().pipe(tap(response => {
-        console.log("Got the config:", response);
-        this.decimalDigits = response;
+        if( Object.keys(response).length === 0){
+          console.log("Use the default config ");
+          this.decimalDigits = this.DEF_DECIMAL_DIGITS;
+        }
+        else{
+          console.log("Got the config:", response);
+          this.decimalDigits = response;
+        }
       }, err => {
         console.log("ERROR while loading the confguration", err.message);
-        this.decimalDigits = 2;
+        this.decimalDigits = this.DEF_DECIMAL_DIGITS;
       }))
     })).subscribe((res) => {
       this.isAuthorizedUser = true;

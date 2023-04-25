@@ -115,7 +115,8 @@
 <div [style.display]="selectedCurrecnyerrorMessage? 'block' : 'none'" class="error-message" #selectCurrecnyErrMessage>
     {{ selectedCurrecnyerrorMessage }}
 </div>
-<div [style.display]="errorMessage? 'block' : 'none'" class="error-message" #errMessage>
+
+<div [style.display]="errorMessage&& !selectedCurrecnyerrorMessage? 'block' : 'none'" class="error-message" #errMessage>
     {{ errorMessage }}
 </div>
 
