@@ -1,5 +1,11 @@
 import { DatePipe } from "@angular/common";
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from "@angular/core";
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ElementRef
+} from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import {
   AlertService,
@@ -8,7 +14,14 @@ import {
   CloudAppConfigService,
   Entity
 } from "@exlibris/exl-cloudapp-angular-lib";
-import { forkJoin, Observable, of, throwError, iif, defer } from "rxjs";
+import {
+  forkJoin,
+  Observable,
+  of,
+  throwError,
+  iif,
+  defer
+} from "rxjs";
 import {
   defaultIfEmpty,
   finalize,
@@ -56,25 +69,29 @@ export class MainComponent implements OnInit,
   fineFeeEntities$: Observable<FineFee[]>;
   _count = 0;
   decimalDigits: number;
-  readonly config = { attributes: true, childList: true, subtree: true };
+  readonly config = {
+    attributes: true,
+    childList: true,
+    subtree: true
+  };
   readonly DEF_DECIMAL_DIGITS: number = 2;
 
   // Callback function to execute when mutations are observed
   callbackConvertedResultRef = (mutationList, observer) => {
     this.convertedResultRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    //stop observing
+    // stop observing
     observer.disconnect();
   };
 
   callbackErrorMessageRef = (mutationList, observer) => {
     this.errorMessageRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    //stop observing
+    // stop observing
     observer.disconnect();
   };
 
   callbackSelectCurrencyErrorMessageRef = (mutationList, observer) => {
     this.selectCurrecnyErrMessageRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    //stop observing
+    // stop observing
     observer.disconnect();
   };
 
@@ -113,8 +130,7 @@ export class MainComponent implements OnInit,
         if (Object.keys(response).length === 0) {
           console.log("Use the default config ");
           this.decimalDigits = this.DEF_DECIMAL_DIGITS;
-        }
-        else {
+        } else {
           console.log("Got the config:", response);
           this.decimalDigits = response;
         }
@@ -203,11 +219,15 @@ export class MainComponent implements OnInit,
       const entity = entities.filter((entity) => entity?.type === "USER");
       if (entity.length > 0)
         return entity[0];
+
+
     }), mergeMap((entity) => !!entity ? this.restService.call(entity?.link + "/fees") : of(null)), map((full) => {
       if (full?.total_sum === 0)
         this.userActiveBlance = full.total_sum;
       else
         this.userActiveBlance = full?.total_sum ?? null;
+
+
     }), catchError((error) => {
       console.log(error);
       return error
@@ -247,6 +267,8 @@ export class MainComponent implements OnInit,
       this._count = fees.length;
       if (this._count === 0)
         this.errorMessage = this.NAVIGATE_TO_A_PAGE_WITH_LIST_OF_FINES_ERROR;
+
+
       return fees;
     }), finalize(() => {
       this.loading = false;
@@ -261,7 +283,9 @@ export class MainComponent implements OnInit,
     this.eventsService.entities$.pipe(take(1), map((entities) => {
       const entity = entities.filter((entity) => entity?.type === "USER");
       return (entity.length > 0) ? entity[0] : undefined;
-    }), mergeMap((entity) => { return (entity != undefined) ? of(entity) : throwError("Please navigate to a page with user id") }), mergeMap((entity) => !!entity ? this.restService.call(entity?.link + "/fees") : of(null)), map((full) => {
+    }), mergeMap((entity) => {
+      return (entity != undefined) ? of(entity) : throwError("Please navigate to a page with user id")
+    }), mergeMap((entity) => !!entity ? this.restService.call(entity?.link + "/fees") : of(null)), map((full) => {
       return full?.fee ?? [];
     }), map((fees: FineFee[]) => {
       fees.map((fine) => {
@@ -299,6 +323,8 @@ export class MainComponent implements OnInit,
       this.convertedAmount = null;
     } else
       this.selectedCurrecnyerrorMessage = null;
+
+
   }
 
   convertUserFeesInAlmaPage() {
@@ -313,10 +339,11 @@ export class MainComponent implements OnInit,
     this.sourceAmount = null;
     this.convertedAmount = null;
     this.errorMessage = null;
-    let date = new Date()
-    defer(() => this.restService.call("/almaws/v1/acq/currencies?mode=Ratio&source_currency=" + sourceCurrency + "&target_currency=" + targetCurrency + "&exchange_date=" + this.datePipe.transform(date, "yyyyMMdd"))).pipe(tap(
-      error => date.setDate(date.getDate() - 1)
-    ), retry(3)).subscribe((currenciesResponce: Currencies) => {
+    let date = new Date();
+    defer(() => this.restService.call("/almaws/v1/acq/currencies?mode=Ratio&source_currency=" + sourceCurrency + "&target_currency=" + targetCurrency + "&exchange_date=" + this.datePipe.transform(date, "yyyyMMdd"))).pipe(tap({
+      next: () => { },
+      error: error => date.setDate(date.getDate() - 1)
+    }), retry(3)).subscribe((currenciesResponce: Currencies) => {
       if (currenciesResponce?.currency.length > 0) {
         let exchangeRatio: number = currenciesResponce.currency[0]?.exchange_ratio.value;
         if (exchangeRatio) {
