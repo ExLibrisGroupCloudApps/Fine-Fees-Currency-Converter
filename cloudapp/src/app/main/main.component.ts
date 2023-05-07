@@ -8,7 +8,7 @@ import {
   CloudAppConfigService,
   Entity
 } from "@exlibris/exl-cloudapp-angular-lib";
-import { forkJoin, Observable, of, throwError } from "rxjs";
+import { forkJoin, Observable, of, throwError, iif, defer } from "rxjs";
 import {
   defaultIfEmpty,
   finalize,
@@ -16,7 +16,9 @@ import {
   mergeMap,
   take,
   tap,
-  catchError
+  catchError,
+  retry,
+  switchMap
 } from "rxjs/operators";
 import { Currencies, FineFee } from "../fine-fee.model";
 import { MappingTable } from "../mappingTable";
@@ -55,7 +57,7 @@ export class MainComponent implements OnInit,
   _count = 0;
   decimalDigits: number;
   readonly config = { attributes: true, childList: true, subtree: true };
-  readonly DEF_DECIMAL_DIGITS : number = 2;
+  readonly DEF_DECIMAL_DIGITS: number = 2;
 
   // Callback function to execute when mutations are observed
   callbackConvertedResultRef = (mutationList, observer) => {
@@ -108,11 +110,11 @@ export class MainComponent implements OnInit,
       }
     }), mergeMap(() => {
       return this.configService.get().pipe(tap(response => {
-        if( Object.keys(response).length === 0){
+        if (Object.keys(response).length === 0) {
           console.log("Use the default config ");
           this.decimalDigits = this.DEF_DECIMAL_DIGITS;
         }
-        else{
+        else {
           console.log("Got the config:", response);
           this.decimalDigits = response;
         }
@@ -311,14 +313,10 @@ export class MainComponent implements OnInit,
     this.sourceAmount = null;
     this.convertedAmount = null;
     this.errorMessage = null;
-    let currentDate: string = this.datePipe.transform(new Date(), "yyyyMMdd");
-    let yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    let yesterdayDate = this.datePipe.transform(yesterday, "yyyyMMdd");
-
-    this.restService.call("/almaws/v1/acq/currencies?mode=Ratio&source_currency=" + sourceCurrency + "&target_currency=" + targetCurrency + "&exchange_date=" + currentDate).pipe(catchError(err => {
-      return this.restService.call("/almaws/v1/acq/currencies?mode=Ratio&source_currency=" + sourceCurrency + "&target_currency=" + targetCurrency + "&exchange_date=" + yesterdayDate)
-    })).subscribe((currenciesResponce: Currencies) => {
+    let date = new Date()
+    defer(() => this.restService.call("/almaws/v1/acq/currencies?mode=Ratio&source_currency=" + sourceCurrency + "&target_currency=" + targetCurrency + "&exchange_date=" + this.datePipe.transform(date, "yyyyMMdd"))).pipe(tap(
+      error => date.setDate(date.getDate() - 1)
+    ), retry(3)).subscribe((currenciesResponce: Currencies) => {
       if (currenciesResponce?.currency.length > 0) {
         let exchangeRatio: number = currenciesResponce.currency[0]?.exchange_ratio.value;
         if (exchangeRatio) {
@@ -336,6 +334,7 @@ export class MainComponent implements OnInit,
   }
 
 }
+
 export enum ConvertType {
   CONVERT_SPECIFIC_AMOUNT = "CONVERT_SPECIFIC_AMOUNT",
   CONVERT_USER_FEES_IN_ALMA_PAGE = "CONVERT_USER_FEES_IN_ALMA_PAGE",
